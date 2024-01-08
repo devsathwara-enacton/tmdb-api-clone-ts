@@ -1,9 +1,6 @@
 import express, { NextFunction, Request, Response, Router } from "express";
 import { reaction } from "../controllers";
-import {
-  authCheck,
-  checkVerifyEmail,
-} from "../middleware/authMiddleware";
+import { authCheck, checkVerifyEmail } from "../middleware/authMiddleware";
 const router: Router = express.Router();
 router.get(
   "/getReaction/:mid",
@@ -12,7 +9,7 @@ router.get(
   reaction.getReaction
 );
 router.post(
-  "/movies-likeDislike/:mid",
+  "/movies-reaction/:mid",
   authCheck,
   checkVerifyEmail,
   reaction.insert

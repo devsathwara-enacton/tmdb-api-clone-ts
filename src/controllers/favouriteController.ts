@@ -30,7 +30,7 @@ export const insert = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteFav= async (req: Request, res: Response) => {
+export const deleteFav = async (req: Request, res: Response) => {
   try {
     const userEmail = req.cookies.email;
     const { mid } = req.body;
@@ -42,7 +42,7 @@ export const deleteFav= async (req: Request, res: Response) => {
     console.error(error);
   }
 };
-export const getFavourties = async (req: Request, res: Response) => {
+export const getFav = async (req: Request, res: Response) => {
   const { email } = req.cookies;
   const favouritesId = await favourite.check(email);
   const moviesArr: any[] = [];

@@ -1,16 +1,8 @@
 import express, { NextFunction, Request, Response, Router } from "express";
 import { comment } from "../controllers";
-import {
-  authCheck,
-  checkVerifyEmail,
-} from "../middleware/authMiddleware";
+import { authCheck, checkVerifyEmail } from "../middleware/authMiddleware";
 const router: Router = express.Router();
-router.post(
-  "/insertComment/:mid",
-  authCheck,
-  checkVerifyEmail,
-  comment.insertComment
-);
+router.post("/insertComment/:mid", authCheck, checkVerifyEmail, comment.insert);
 router.post(
   "/insertReply/:mid/:cid",
   authCheck,

@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response, request } from "express";
 import { comment } from "../models/index";
 import { StatusCodes } from "http-status-codes";
 import sendResponse from "../../utils/responseUtlis";
-export async function insertComment(req: Request, res: Response) {
+export async function insert(req: Request, res: Response) {
   try {
     const email = req.cookies.email;
     let { mid } = req.params;

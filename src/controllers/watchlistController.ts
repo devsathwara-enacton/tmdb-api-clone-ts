@@ -2,10 +2,7 @@ import express, { NextFunction, Request, Response, request } from "express";
 import { watchList, movies } from "../models/index";
 import sendResponse from "../../utils/responseUtlis";
 import { StatusCodes } from "http-status-codes";
-export const createWatchList = async (
-  req: Request,
-  res: Response
-): Promise<any> => {
+export const create = async (req: Request, res: Response): Promise<any> => {
   try {
     let { name } = req.body;
     if (!name) {
@@ -38,7 +35,7 @@ export const createWatchList = async (
     console.error(error);
   }
 };
-export const accessListUser = async (req: Request, res: Response) => {
+export const accessList = async (req: Request, res: Response) => {
   try {
     const userEmail = req.cookies.email;
     const userList = await watchList.accessList(userEmail);
@@ -51,7 +48,7 @@ export const accessListUser = async (req: Request, res: Response) => {
     console.error(error);
   }
 };
-export const insertMovieswatchlist = async (req: Request, res: Response) => {
+export const insert = async (req: Request, res: Response) => {
   try {
     const userEmail = req.cookies.email;
     const { mid, id } = req.body;
@@ -75,7 +72,7 @@ export const insertMovieswatchlist = async (req: Request, res: Response) => {
     console.error(error);
   }
 };
-export const getMoviesWatchList = async (req: Request, res: Response) => {
+export const getMovies = async (req: Request, res: Response) => {
   const { email } = req.cookies;
   const { id } = req.params;
   const favouritesId: any = await watchList.getMid(email, id);
@@ -101,7 +98,7 @@ export const getMoviesWatchList = async (req: Request, res: Response) => {
   }
   sendResponse(res, StatusCodes.ACCEPTED, { WatchListMovies: moviesArr });
 };
-export const deleteMoviesWatchList = async (req: Request, res: Response) => {
+export const deleteMovies = async (req: Request, res: Response) => {
   try {
     const userEmail = req.cookies.email;
     const { id } = req.params;
@@ -114,7 +111,7 @@ export const deleteMoviesWatchList = async (req: Request, res: Response) => {
     console.error(error);
   }
 };
-export const accessWatchListpublic = async (req: Request, res: Response) => {
+export const shareWatchList = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const data: any = await watchList.shareWatchList(id);
@@ -139,7 +136,7 @@ export const accessWatchListpublic = async (req: Request, res: Response) => {
     console.error(error);
   }
 };
-export async function updateWatchlistName(req: Request, res: Response) {
+export async function update(req: Request, res: Response) {
   const email = req.cookies.email;
   const { id } = req.params;
   const { name } = req.body;
@@ -154,7 +151,7 @@ export async function updateWatchlistName(req: Request, res: Response) {
     });
   }
 }
-export async function deleteWatchlist(req: Request, res: Response) {
+export async function deleteWatchList(req: Request, res: Response) {
   try {
     const email = req.cookies.email;
     const { id } = req.params;
