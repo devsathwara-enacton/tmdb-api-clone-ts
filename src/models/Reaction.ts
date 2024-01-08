@@ -6,29 +6,24 @@ export async function insert(data: any) {
     console.warn("No data provided for insertion.");
     return;
   }
-  try {
-    const checkLikeDislike = await db
-      .selectFrom("movie_likes")
-      .selectAll()
+  const checkLikeDislike = await db
+    .selectFrom("movie_likes")
+    .selectAll()
+    .where("mid", "=", data.mid)
+    .executeTakeFirst();
+  if (checkLikeDislike) {
+    const result = await db
+      .updateTable("movie_likes")
+      .set({
+        reaction: data.reaction,
+        updated_at: new Date(),
+      })
       .where("mid", "=", data.mid)
       .executeTakeFirst();
-    if (checkLikeDislike) {
-      const result = await db
-        .updateTable("movie_likes")
-        .set({
-          reaction: data.reaction,
-          updated_at: new Date(),
-        })
-        .where("mid", "=", data.mid)
-        .executeTakeFirst();
-      return result;
-    } else {
-      const result = await db.insertInto("movie_likes").values(data).execute();
-      return result;
-    }
-  } catch (error: any) {
-    console.error("SQL Error:", error.message);
-    throw error;
+    return result;
+  } else {
+    const result = await db.insertInto("movie_likes").values(data).execute();
+    return result;
   }
 }
 export async function getReaction(mid: any) {

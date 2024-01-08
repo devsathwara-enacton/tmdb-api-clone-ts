@@ -8,99 +8,82 @@ import { StatusCodes } from "http-status-codes";
 import signInValidation from "../../validation/validation";
 import sendResponse from "../../utils/responseUtlis";
 export const register = async (req: Request, res: Response): Promise<any> => {
-  try {
-    let { email, password }: any = signInValidation.parse(req.body);
-    let { username } = req.body;
-    const userExist = await User.findUser(email);
-    if (userExist) {
-      sendResponse(res, StatusCodes.BAD_REQUEST, {
-        message: "Your account already exist please login",
-      });
-    }
-    // hash the password before saving it to database
-    password = await bcrypt.hash(password, 10);
-    let token = createJWTToken(
-      { email: email, name: username },
-      `${parseInt(config.env.app.expiresIn)}h`
-    );
-    let data: any = {
-      username: username,
-      email: email,
-      password: password,
-      is_verified: false,
-    };
-    const user = await User.register(data);
-    if (user) {
-      //verify email
-      const info = await sendEmail(
-        config.env.app.email,
-        email,
-        "Email Verification Link",
-        `Hello👋,${username} 
-      Please verify your email by clicking below link`,
-        `<a>${config.env.app.appUrl}/user/verify-email/${token}</a>`
-      );
-
-      // console.log("Message sent: %s", info.messageId);
-      sendResponse(res, StatusCodes.ACCEPTED, {
-        message: `Message Sent to ${email} Please verify it`,
-      });
-    } else {
-      console.log("Error in creating new user");
-      throw new Error("Error in creating new user");
-    }
-  } catch (error: any) {
-    if (error instanceof Z.ZodError) {
-      const errorMessage = error.errors.map((e) => e.message).join(", ");
-      return res.status(400).json({ error: errorMessage });
-    }
-
-    console.error(error);
-    sendResponse(res, StatusCodes.INTERNAL_SERVER_ERROR, {
-      error: "Internal Server Error",
+  let { email, password }: any = signInValidation.parse(req.body);
+  let { username } = req.body;
+  const userExist = await User.findUser(email);
+  if (userExist) {
+    sendResponse(res, StatusCodes.BAD_REQUEST, {
+      message: "Your account already exist please login",
     });
+  }
+  // hash the password before saving it to database
+  password = await bcrypt.hash(password, 10);
+  let token = createJWTToken(
+    { email: email, name: username },
+    `${parseInt(config.env.app.expiresIn)}h`
+  );
+  let data: any = {
+    username: username,
+    email: email,
+    password: password,
+    is_verified: false,
+  };
+  const user = await User.register(data);
+  if (user) {
+    //verify email
+    const info = await sendEmail(
+      config.env.app.email,
+      email,
+      "Email Verification Link",
+      `Hello👋,${username} 
+      Please verify your email by clicking below link`,
+      `<a>${config.env.app.appUrl}/user/verify-email/${token}</a>`
+    );
+
+    // console.log("Message sent: %s", info.messageId);
+    sendResponse(res, StatusCodes.ACCEPTED, {
+      message: `Message Sent to ${email} Please verify it`,
+    });
+  } else {
+    console.log("Error in creating new user");
+    throw new Error("Error in creating new user");
   }
 };
 export const login = async (req: Request, res: Response): Promise<any> => {
-  try {
-    let { email, password } = req.body;
-    const user = await User.findUser(email);
-    if (!user) {
-      sendResponse(res, StatusCodes.NON_AUTHORITATIVE_INFORMATION, {
-        auth: false,
-        token: null,
-        message: "Email not found please register",
-      });
-    }
-
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
-      sendResponse(res, StatusCodes.NON_AUTHORITATIVE_INFORMATION, {
-        auth: false,
-        token: null,
-        message: "Wrong Password",
-      });
-    }
-    var token = createJWTToken(
-      { email: user.email },
-      `${parseInt(config.env.app.expiresIn)}h`
-    );
-    res.cookie("token", token, {
-      httpOnly: true,
-      expires: config.env.app.cookieExpiration,
+  let { email, password } = req.body;
+  const user = await User.findUser(email);
+  if (!user) {
+    sendResponse(res, StatusCodes.NON_AUTHORITATIVE_INFORMATION, {
+      auth: false,
+      token: null,
+      message: "Email not found please register",
     });
-    res.cookie("email", user.email, {
-      httpOnly: true,
-      expires: config.env.app.cookieExpiration,
-    });
-    sendResponse(res, StatusCodes.ACCEPTED, {
-      auth: true,
-      username: user.username,
-      message: "Authentication Successfull",
-    });
-  } catch (error) {
-    console.error(error);
   }
+  const validPassword = await bcrypt.compare(password, user.password);
+  if (!validPassword) {
+    sendResponse(res, StatusCodes.NON_AUTHORITATIVE_INFORMATION, {
+      auth: false,
+      token: null,
+      message: "Wrong Password",
+    });
+  }
+  var token = createJWTToken(
+    { email: user.email },
+    `${parseInt(config.env.app.expiresIn)}h`
+  );
+  res.cookie("token", token, {
+    httpOnly: true,
+    expires: config.env.app.cookieExpiration,
+  });
+  res.cookie("email", user.email, {
+    httpOnly: true,
+    expires: config.env.app.cookieExpiration,
+  });
+  sendResponse(res, StatusCodes.ACCEPTED, {
+    auth: true,
+    username: user.username,
+    message: "Authentication Successfull",
+  });
 };
 export const logout = async (req: Request, res: Response): Promise<any> => {
   try {

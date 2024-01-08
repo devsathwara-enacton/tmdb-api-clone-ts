@@ -3,25 +3,21 @@ import { comment } from "../models/index";
 import { StatusCodes } from "http-status-codes";
 import sendResponse from "../../utils/responseUtlis";
 export async function insert(req: Request, res: Response) {
-  try {
-    const email = req.cookies.email;
-    let { mid } = req.params;
-    let { comments } = req.body;
-    let data: any = {
-      movie_id: mid,
-      user_email: email,
-      comment: comments,
-      parent_id: null,
-      created_at: new Date(),
-      updated_at: new Date(),
-    };
-    const result = await comment.insert(data);
-    sendResponse(res, StatusCodes.ACCEPTED, {
-      message: "The comment was added successfully",
-    });
-  } catch (error) {
-    console.error(error);
-  }
+  const email = req.cookies.email;
+  let { mid } = req.params;
+  let { comments } = req.body;
+  let data: any = {
+    movie_id: mid,
+    user_email: email,
+    comment: comments,
+    parent_id: null,
+    created_at: new Date(),
+    updated_at: new Date(),
+  };
+  const result = await comment.insert(data);
+  sendResponse(res, StatusCodes.ACCEPTED, {
+    message: "The comment was added successfully",
+  });
 }
 export async function insertReply(req: Request, res: Response) {
   try {

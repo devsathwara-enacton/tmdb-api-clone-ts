@@ -7,9 +7,8 @@ export const insert = async (data: any[]): Promise<void> => {
     return;
   }
 
-  try {
-    for (const record of data) {
-      const result = await sql<any>`
+  for (const record of data) {
+    const result = await sql<any>`
         INSERT INTO \`movies-info\`(
           mid,
           adult,
@@ -85,13 +84,6 @@ export const insert = async (data: any[]): Promise<void> => {
           updated_at = VALUES(updated_at),
           keywords=VALUES(keywords);
       `.execute(db);
-    }
-    // if (result) {
-    //   console.log(`${result.length} row(s) inserted.`);
-    // }
-  } catch (error: any) {
-    console.error("SQL Error:", error.message);
-    throw error;
   }
 };
 export const getMovies = async (
@@ -198,18 +190,13 @@ export const insertGenre = async (data: any[]): Promise<any> => {
     return;
   }
 
-  try {
-    const result = await db
-      .insertInto("movies-genre")
-      .values(data)
-      .ignore()
-      .execute();
+  const result = await db
+    .insertInto("movies-genre")
+    .values(data)
+    .ignore()
+    .execute();
 
-    return result;
-  } catch (error: any) {
-    console.error("SQL Error:", error.message);
-    throw error;
-  }
+  return result;
 };
 export async function checkMid(movieID: any) {
   const list = await db
