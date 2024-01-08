@@ -44,10 +44,10 @@ export const deleteFav = async (req: Request, res: Response) => {
 };
 export const getFav = async (req: Request, res: Response) => {
   const { email } = req.cookies;
-  const favouritesId = await favourite.check(email);
+  const favId = await favourite.check(email);
   const moviesArr: any[] = [];
   await Promise.all(
-    favouritesId.map(async (i: any) => {
+    favId.map(async (i: any) => {
       let arr = JSON.parse(i.favourites);
       const moviePromises = arr.map(async (i: any) => {
         const movie = await movies.getMovie(i);

@@ -7,10 +7,7 @@ import { sendEmail, createJWTToken, validateJWTToken } from "../../utils/utils";
 import { StatusCodes } from "http-status-codes";
 import signInValidation from "../../validation/validation";
 import sendResponse from "../../utils/responseUtlis";
-export const register = async (
-  req: Request,
-  res: Response
-): Promise<any> => {
+export const register = async (req: Request, res: Response): Promise<any> => {
   try {
     let { email, password }: any = signInValidation.parse(req.body);
     let { username } = req.body;

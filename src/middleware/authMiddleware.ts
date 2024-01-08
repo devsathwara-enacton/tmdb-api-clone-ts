@@ -16,14 +16,16 @@ export const authCheck = (
 ): any => {
   let email = req.cookies.email;
   const token = req.cookies.token;
-  const decoded:any = validateJWTToken(token) as JwtPayload;
-  if (decoded.exp <= Date.now() / 1000) {
-    sendResponse(res,StatusCodes.UNAUTHORIZED,{ message: "Token has expired" })
-  }
-  if (!email) {
-    sendResponse(res,StatusCodes.UNAUTHORIZED,{
+  if (!email && !token) {
+    sendResponse(res, StatusCodes.UNAUTHORIZED, {
       message: "Please login first",
-    })
+    });
+    const decoded: any = validateJWTToken(token) as JwtPayload;
+    if (decoded.exp <= Date.now() / 1000) {
+      sendResponse(res, StatusCodes.UNAUTHORIZED, {
+        message: "Token has expired",
+      });
+    }
   } else {
     next();
   }
@@ -36,9 +38,11 @@ export const checkVerifyEmail = async (
   try {
     const email = req.cookies.email;
     const token = req.cookies.token;
-    const decoded:any = validateJWTToken(token) as JwtPayload;
+    const decoded: any = validateJWTToken(token) as JwtPayload;
     if (decoded.exp <= Date.now() / 1000) {
-      sendResponse(res,StatusCodes.UNAUTHORIZED,{ message: "Token has expired" })
+      sendResponse(res, StatusCodes.UNAUTHORIZED, {
+        message: "Token has expired",
+      });
     }
     if (email) {
       const user = await findUser(email);

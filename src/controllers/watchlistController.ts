@@ -81,7 +81,6 @@ export const getMovies = async (req: Request, res: Response) => {
       message: "List Doesnt have any Movies Please Add Movies",
     });
   }
-  console.log(favouritesId);
   const moviesArr: any[] = [];
 
   let arr = JSON.parse(favouritesId.mid);
@@ -128,7 +127,7 @@ export const shareWatchList = async (req: Request, res: Response) => {
     });
     movieArr.push(...(await Promise.all(moviePromises)));
     sendResponse(res, StatusCodes.ACCEPTED, {
-      Watchlistname: data.name,
+      WatchListName: data.name,
       Owner: data.email,
       WatchListMovies: movieArr,
     });
@@ -157,16 +156,22 @@ export async function deleteWatchList(req: Request, res: Response) {
     const { id } = req.params;
 
     const result = await watchList.deleteWatchList(email, id);
-    if (!result) {
-      sendResponse(res, StatusCodes.CONFLICT, {
-        message: "Failed to Update the Name",
-      });
-    } else {
+
+    if (result.length > 0 && result[0].numDeletedRows > 0) {
+      // Deletion successful
       sendResponse(res, StatusCodes.ACCEPTED, {
         message: "Delete Successfully!",
+      });
+    } else {
+      // Deletion failed
+      sendResponse(res, StatusCodes.CONFLICT, {
+        message: "Failed to Delete the Item",
       });
     }
   } catch (error) {
     console.error(error);
+    sendResponse(res, StatusCodes.INTERNAL_SERVER_ERROR, {
+      message: "Internal Server Error",
+    });
   }
 }
