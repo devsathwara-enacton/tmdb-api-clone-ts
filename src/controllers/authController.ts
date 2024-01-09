@@ -1,6 +1,6 @@
 import { User } from "../models/index";
 import { NextFunction, Request, Response } from "express";
-import * as Z from "zod";
+
 import * as bcrypt from "bcrypt";
 import config from "../config/config";
 import { sendEmail, createJWTToken, validateJWTToken } from "../../utils/utils";
@@ -161,7 +161,7 @@ export const forgotPassword = async (
       config.env.app.email,
       email,
       "Password Reset Link",
-      `Hello👋, click the link below to reset your password: ${resetLink}`,
+      `Hello👋, click the link below to reset your password`,
       `${resetLink}`
     );
     sendResponse(res, StatusCodes.ACCEPTED, {
@@ -179,7 +179,7 @@ export const resetPassword = async (
   res: Response
 ): Promise<any> => {
   const { token } = req.params;
-  const { password } = req.body;
+  const { password } = signInValidation.parse(req.body);
 
   if (!token) {
     sendResponse(res, StatusCodes.NOT_FOUND, {
@@ -219,7 +219,7 @@ export const changePassword = async (
 ): Promise<any> => {
   try {
     let email = req.cookies.email;
-    const { currentPassword, newPassword } = req.body;
+    const { currentPassword, newPassword } = signInValidation.parse(req.body);
     const user = await User.findUser(email);
 
     if (!user) {
@@ -238,7 +238,6 @@ export const changePassword = async (
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     await User.updatePassword(email, hashedNewPassword);
-
     sendResponse(res, StatusCodes.ACCEPTED, {
       message: "Password changed successfully",
     });

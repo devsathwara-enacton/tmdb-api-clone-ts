@@ -9,5 +9,5 @@ router.post(
   checkVerifyEmail,
   comment.insertReply
 );
-router.get("/getComments/:mid", authCheck, checkVerifyEmail, comment.fetch);
+router.get("/getComments/:mid", comment.fetch);
 export default router;
