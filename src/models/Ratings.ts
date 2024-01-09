@@ -1,7 +1,7 @@
 import { db } from "../db/database";
 import { MoviesInfo } from "../db/db";
 import { sql } from "kysely";
-export async function genreRatings(id: any) {
+export async function fetch(id: any) {
   const result = sql<any>`SELECT
     JSON_UNQUOTE(JSON_EXTRACT(mi.genre_ids, "$[0]")) as genre_id,
     mg.name as genre_name,
@@ -23,7 +23,7 @@ export async function insert(data: any) {
       .selectFrom("movies_ratings")
       .selectAll()
       .where("mid", "=", data.mid)
-      .where("email", "=", data.email)
+      .where("uid", "=", data.uid)
       .executeTakeFirst();
     if (checkRatings) {
       const result = await db

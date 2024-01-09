@@ -10,8 +10,8 @@ export interface MovieComments {
   id: Generated<number>;
   movie_id: Generated<number | null>;
   parent_id: Generated<number | null>;
+  uid: Generated<number | null>;
   updated_at: Generated<Date>;
-  user_email: Generated<string | null>;
 }
 
 export interface MovieLikes {
@@ -19,8 +19,8 @@ export interface MovieLikes {
   id: Generated<number>;
   mid: number;
   reaction: Generated<string | null>;
+  uid: Generated<number | null>;
   updated_at: Generated<Date>;
-  user_email: Generated<string | null>;
 }
 
 export interface MoviesGenre {
@@ -33,11 +33,11 @@ export interface MoviesInfo {
   backdrop_path: Generated<string | null>;
   budget: Generated<number | null>;
   countries: Generated<string | null>;
-  created_at: Generated<Date>;
+  created_at: Generated<Date | null>;
   external_ids: Generated<string | null>;
   genre_ids: Generated<string | null>;
   id: Generated<number>;
-  keywords: string;
+  keywords: Generated<string | null>;
   mid: number;
   original_language: Generated<string | null>;
   original_title: Generated<string | null>;
@@ -49,7 +49,7 @@ export interface MoviesInfo {
   runtime: Generated<number | null>;
   status: Generated<string | null>;
   title: Generated<string | null>;
-  updated_at: Generated<Date>;
+  updated_at: Generated<Date | null>;
   video: Generated<number | null>;
   vote_average: Generated<number | null>;
   vote_count: Generated<number | null>;
@@ -57,11 +57,11 @@ export interface MoviesInfo {
 
 export interface MoviesRatings {
   created_at: Generated<Date | null>;
-  email: string;
   id: Generated<number>;
   mid: number;
   rating: Generated<number | null>;
   types: Generated<string | null>;
+  uid: number;
   updated_at: Generated<Date>;
 }
 
@@ -78,11 +78,11 @@ export interface Users {
 
 export interface WatchList {
   created_at: Generated<Date>;
-  email: string;
   id: Generated<number>;
   is_shared: Generated<number | null>;
   mid: Generated<string | null>;
   name: string;
+  uid: number;
   updated_at: Generated<Date>;
 }
 

@@ -23,15 +23,15 @@ export const insert = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteFav = async (req: Request, res: Response) => {
+export const remove = async (req: Request, res: Response) => {
   const userEmail = req.cookies.email;
   const { mid } = req.body;
-  const result: any = await favourite.deleteFav(mid, userEmail);
+  const result: any = await favourite.remove(mid, userEmail);
   sendResponse(res, StatusCodes.ACCEPTED, {
     message: `${mid} deleted from favourites`,
   });
 };
-export const getFav = async (req: Request, res: Response) => {
+export const fetch = async (req: Request, res: Response) => {
   const { email } = req.cookies;
   const favId = await favourite.check(email);
   const moviesArr: any[] = [];

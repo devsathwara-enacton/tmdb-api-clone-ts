@@ -3,7 +3,7 @@ import { favourite } from "../controllers";
 import { authCheck, checkVerifyEmail } from "../middleware/authMiddleware";
 const router: Router = express.Router();
 
-router.post("/add-favourites", authCheck, favourite.insert);
-router.post("/delete-favourites", authCheck, favourite.deleteFav);
-router.get("/access-favourite-list", authCheck, favourite.getFav);
+router.post("/insert", authCheck, favourite.insert);
+router.post("/delete", authCheck, favourite.remove);
+router.get("/access", authCheck, favourite.fetch);
 export default router;

@@ -6,7 +6,7 @@ async function insert(data: any) {
   return result;
 }
 
-async function getComments(movieId: any) {
+async function fetch(movieId: any) {
   const comments = await db
     .selectFrom("movie_comments")
     .selectAll()
@@ -31,4 +31,4 @@ function buildCommentTree(comments: any, parent_id = null) {
   return result;
 }
 
-export { insert, getComments };
+export { insert, fetch };

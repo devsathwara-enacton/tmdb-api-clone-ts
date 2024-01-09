@@ -26,7 +26,7 @@ export async function insert(data: any) {
     return result;
   }
 }
-export async function getReaction(mid: any) {
+export async function fetch(mid: any) {
   const result = sql<any>`SELECT
   COUNT(CASE WHEN reaction = 'LIKE' THEN 1 END) AS like_count,
   COUNT(CASE WHEN reaction = 'DISLIKE' THEN 1 END) AS dislike_count

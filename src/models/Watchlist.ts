@@ -1,7 +1,7 @@
 import { db } from "../db/database";
 import { MoviesInfo } from "../db/db";
 import { sql } from "kysely";
-export async function insert(email: any, mid: any, id: any) {
+export async function insertMovies(uid: any, mid: any, id: any) {
   const result = sql<any>`
   UPDATE \`watch-list\`
 SET mid = JSON_ARRAY_APPEND(
@@ -9,39 +9,39 @@ SET mid = JSON_ARRAY_APPEND(
     '$',
     ${mid}
 )
-WHERE email = ${email} AND id = ${id}
+WHERE uid = ${uid} AND id = ${id}
   AND JSON_SEARCH(COALESCE(mid, JSON_ARRAY()), 'one', ${mid}) IS NULL;
     `.execute(db);
   return result;
 }
-export async function update(email: any, id: any, name: any) {
+export async function update(uid: any, id: any, name: any) {
   const result = sql<any>`
       UPDATE \`watch-list\`
       SET name = ${name},updated_at=CURRENT_TIMESTAMP
-      WHERE id = ${id} AND email = ${email}
+      WHERE id = ${id} AND uid = ${uid}
     `.execute(db);
   return result;
 }
-export async function deleteMovies(mid: any, email: any, id: any) {
+export async function removeMovie(mid: any, uid: any, id: any) {
   const result = sql<any>`  UPDATE \`watch-list\`
     SET mid = CASE
       WHEN JSON_SEARCH(mid, 'one', ${mid}) IS NOT NULL
       THEN JSON_SET(COALESCE(mid, '[]'), '$', JSON_REMOVE(mid, JSON_UNQUOTE(JSON_SEARCH(mid, 'one', ${mid}))))
       ELSE COALESCE(mid, '[]')
     END
-    WHERE email = ${email} AND id=${id}`.execute(db);
+    WHERE uid = ${uid} AND id=${id}`.execute(db);
   return result;
 }
 
-export async function deleteWatchList(email: any, id: any) {
+export async function remove(uid: any, id: any) {
   const result = db
     .deleteFrom("watch-list")
     .where("id", "=", id)
-    .where("email", "=", email)
+    .where("uid", "=", parseInt(`${uid}`))
     .execute();
   return result;
 }
-export async function shareWatchList(id: any) {
+export async function share(id: any) {
   const result = await db
     .selectFrom("watch-list")
     .selectAll()
@@ -54,7 +54,7 @@ export async function shareWatchList(id: any) {
     return result;
   }
 }
-export const insertList = async (data: any): Promise<any> => {
+export const insert = async (data: any): Promise<any> => {
   if (data.length == 0) {
     console.warn("No data provided for insertion.");
     return;
@@ -65,28 +65,28 @@ export const insertList = async (data: any): Promise<any> => {
     .ignore()
     .execute();
 };
-export const accessList = async (email: any): Promise<any> => {
+export const access = async (uid: any): Promise<any> => {
   const list = await db
     .selectFrom("watch-list")
     .selectAll()
-    .where("email", "=", `${email}`)
+    .where("uid", "=", parseInt(`${uid}`))
     .execute();
   return list;
 };
 
-export async function checkWatchList(email: any) {
+export async function checkWatchList(uid: any) {
   const list = await db
     .selectFrom("watch-list")
     .select("mid")
-    .where("email", "=", `${email}`)
+    .where("uid", "=", parseInt(`${uid}`))
     .execute();
   return list;
 }
-export async function getMid(email: any, id: any) {
+export async function getMid(uid: any, id: any) {
   const list = await db
     .selectFrom("watch-list")
     .select("mid")
-    .where("email", "=", `${email}`)
+    .where("uid", "=", parseInt(`${uid}`))
     .where("id", "=", parseInt(`${id}`))
     .executeTakeFirst();
   return list;

@@ -5,11 +5,11 @@ import { StatusCodes } from "http-status-codes";
 
 export async function insert(req: Request, res: Response) {
   let { type } = req.body;
-  const email = req.cookies.email;
+  const uid = req.cookies.uid;
   let { mid } = req.params;
   let data: any = {
     mid: parseInt(mid),
-    user_email: email,
+    uid: uid,
     reaction: type,
     created_at: new Date(),
     updated_at: new Date(),
@@ -17,12 +17,12 @@ export async function insert(req: Request, res: Response) {
   const result = await reaction.insert(data);
   if (result) {
     sendResponse(res, StatusCodes.ACCEPTED, {
-      message: `${mid} ${type} by ${email}`,
+      message: `${mid} ${type} by ${uid}`,
     });
   }
 }
-export async function getReaction(req: Request, res: Response) {
+export async function fetch(req: Request, res: Response) {
   const { mid } = req.params;
-  const result = await reaction.getReaction(mid);
+  const result = await reaction.fetch(mid);
   sendResponse(res, StatusCodes.OK, { reactions: result });
 }

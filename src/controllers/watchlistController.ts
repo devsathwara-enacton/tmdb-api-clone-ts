@@ -9,8 +9,8 @@ export const create = async (req: Request, res: Response): Promise<any> => {
       message: "List name required",
     });
   }
-  const email = req.cookies.email;
-  const nameList = await watchList.accessList(email);
+  const uid = parseInt(req.cookies.uid);
+  const nameList = await watchList.access(uid);
   for (let i of nameList) {
     if (i.name === name) {
       sendResponse(res, StatusCodes.CONFLICT, {
@@ -21,9 +21,9 @@ export const create = async (req: Request, res: Response): Promise<any> => {
 
   let data: any = {
     name: name,
-    email: email,
+    uid: uid,
   };
-  const result = await watchList.insertList(data);
+  const result = await watchList.insert(data);
   // if (!result) {
   //   return res.status(400).send({ message: "errror while creating list" });
   // }
@@ -31,17 +31,17 @@ export const create = async (req: Request, res: Response): Promise<any> => {
     Message: "Successfully created list.",
   });
 };
-export const accessList = async (req: Request, res: Response) => {
-  const userEmail = req.cookies.email;
-  const userList = await watchList.accessList(userEmail);
+export const access = async (req: Request, res: Response) => {
+  const uid: number = req.cookies.uid;
+  const userList = await watchList.access(uid);
   if (userList) {
-    sendResponse(res, StatusCodes.ACCEPTED, { FavouriteList: userList });
+    sendResponse(res, StatusCodes.ACCEPTED, { WatchList: userList });
   } else {
     sendResponse(res, StatusCodes.NOT_FOUND, { message: "No List Found" });
   }
 };
 export const insert = async (req: Request, res: Response) => {
-  const userEmail = req.cookies.email;
+  const uid = req.cookies.uid;
   const { mid, id } = req.body;
   const midCheck = await movies.checkMid(mid);
   if (!midCheck) {
@@ -49,7 +49,7 @@ export const insert = async (req: Request, res: Response) => {
       message: "Movie id is not there in database",
     });
   }
-  const result = await watchList.insert(userEmail, mid, id);
+  const result = await watchList.insertMovies(uid, mid, id);
   if (result.numAffectedRows) {
     sendResponse(res, StatusCodes.ACCEPTED, {
       message: `${mid} added to your WatchList`,
@@ -61,9 +61,9 @@ export const insert = async (req: Request, res: Response) => {
   }
 };
 export const getMovies = async (req: Request, res: Response) => {
-  const { email } = req.cookies;
+  const { uid } = req.cookies;
   const { id } = req.params;
-  const favouritesId: any = await watchList.getMid(email, id);
+  const favouritesId: any = await watchList.getMid(uid, id);
   if (favouritesId.mid === null) {
     sendResponse(res, StatusCodes.NOT_FOUND, {
       message: "List Doesnt have any Movies Please Add Movies",
@@ -77,26 +77,25 @@ export const getMovies = async (req: Request, res: Response) => {
     return movie;
   });
   moviesArr.push(...(await Promise.all(moviePromises)));
-
-  if (moviesArr.length == 0) {
-    sendResponse(res, StatusCodes.NOT_FOUND, {
-      message: "No Movies are there is Watch List",
-    });
-  }
   sendResponse(res, StatusCodes.ACCEPTED, { WatchListMovies: moviesArr });
 };
-export const deleteMovies = async (req: Request, res: Response) => {
-  const userEmail = req.cookies.email;
+export const removeMovie = async (req: Request, res: Response) => {
+  const uid = req.cookies.uid;
   const { id } = req.params;
   const { mid } = req.body;
-  const deleteFav = await watchList.deleteMovies(mid, userEmail, id);
+  const deleteFav = await watchList.removeMovie(mid, uid, id);
   sendResponse(res, StatusCodes.ACCEPTED, {
     message: "Deleted from Your Watch list",
   });
 };
-export const shareWatchList = async (req: Request, res: Response) => {
+export const share = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const data: any = await watchList.shareWatchList(id);
+  const data: any = await watchList.share(id);
+  if (!data) {
+    sendResponse(res, StatusCodes.NOT_FOUND, {
+      message: "No Watch List Found",
+    });
+  }
   let movieArr: any[] = [];
   let arr = JSON.parse(data.mid);
   if (arr === null) {
@@ -116,10 +115,10 @@ export const shareWatchList = async (req: Request, res: Response) => {
   });
 };
 export async function update(req: Request, res: Response) {
-  const email = req.cookies.email;
+  const uid = req.cookies.uid;
   const { id } = req.params;
   const { name } = req.body;
-  const result = await watchList.update(email, id, name);
+  const result = await watchList.update(uid, id, name);
   if (!result) {
     sendResponse(res, StatusCodes.CONFLICT, {
       message: "Failed to Update the Name",
@@ -130,11 +129,11 @@ export async function update(req: Request, res: Response) {
     });
   }
 }
-export async function deleteWatchList(req: Request, res: Response) {
-  const email = req.cookies.email;
+export async function remove(req: Request, res: Response) {
+  const uid = req.cookies.uid;
   const { id } = req.params;
 
-  const result = await watchList.deleteWatchList(email, id);
+  const result = await watchList.remove(uid, id);
 
   if (result.length > 0 && result[0].numDeletedRows > 0) {
     // Deletion successful

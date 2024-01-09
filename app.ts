@@ -28,8 +28,9 @@ app.use("/ratings", ratingsRoutes.default);
 app.use("/favourite", favourtieRoutes.default);
 app.use("/watchList", watchListRoutes.default);
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  const routePath = req.route ? req.route.path : "unknown";
   logger.error(
-    JSON.stringify(req.route.path) + "  " + "Unhandled Error: " + err.stack
+    JSON.stringify(routePath) + "  " + "Unhandled Error: " + err.stack
   );
   // Log the error to the console
   console.error({ error: err.stack });

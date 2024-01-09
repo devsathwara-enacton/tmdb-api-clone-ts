@@ -23,7 +23,7 @@ export async function check(email: any) {
     .execute();
   return list;
 }
-export async function deleteFav(mid: any, email: any) {
+export async function remove(mid: any, email: any) {
   const result = sql<any>`
     UPDATE users
     SET favourites = CASE

@@ -3,12 +3,12 @@ import { comment } from "../models/index";
 import { StatusCodes } from "http-status-codes";
 import sendResponse from "../../utils/responseUtlis";
 export async function insert(req: Request, res: Response) {
-  const email = req.cookies.email;
+  const uid = req.cookies.uid;
   let { mid } = req.params;
   let { comments } = req.body;
   let data: any = {
     movie_id: mid,
-    user_email: email,
+    uid: uid,
     comment: comments,
     parent_id: null,
     created_at: new Date(),
@@ -21,12 +21,12 @@ export async function insert(req: Request, res: Response) {
 }
 export async function insertReply(req: Request, res: Response) {
   try {
-    const email = req.cookies.email;
+    const uid = req.cookies.uid;
     let { mid, cid } = req.params;
     let { comments } = req.body;
     let data: any = {
       movie_id: mid,
-      user_email: email,
+      uid: uid,
       comment: comments,
       parent_id: cid,
       created_at: new Date(),
@@ -40,10 +40,10 @@ export async function insertReply(req: Request, res: Response) {
     console.error(error);
   }
 }
-export async function getComments(req: Request, res: Response) {
+export async function fetch(req: Request, res: Response) {
   try {
     const { mid } = req.params;
-    const comments = await comment.getComments(mid);
+    const comments = await comment.fetch(mid);
     if (!comments || !Array.isArray(comments)) {
       sendResponse(res, StatusCodes.NOT_FOUND, {
         message: "No Comments Found",

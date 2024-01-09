@@ -146,3 +146,32 @@
 2024-01-08T08:34:53.874Z [error]: Unhandled Rejection{}{"route":"unknown"} 
 2024-01-08T08:36:25.090Z [error]: Unhandled Rejection{}{"route":"unknown"} 
 2024-01-08T08:36:44.652Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-09T04:25:24.978Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-09T04:27:37.577Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-09T04:29:26.562Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-09T05:18:00.376Z [error]: "unknown"  Unhandled Error: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at createStrictSyntaxError (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\body-parser\lib\types\json.js:160:10)
+    at parse (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\body-parser\lib\types\json.js:83:15)
+    at C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:204:9)
+    at invokeCallback (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\raw-body\index.js:231:16)
+    at done (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\raw-body\index.js:220:7)
+    at IncomingMessage.onEnd (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\raw-body\index.js:280:7)
+    at IncomingMessage.emit (node:events:513:28)
+    at IncomingMessage.emit (node:domain:489:12) 
+2024-01-09T05:19:53.753Z [error]: "unknown"  Unhandled Error: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at createStrictSyntaxError (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\body-parser\lib\types\json.js:160:10)
+    at parse (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\body-parser\lib\types\json.js:83:15)
+    at C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:204:9)
+    at invokeCallback (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\raw-body\index.js:231:16)
+    at done (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\raw-body\index.js:220:7)
+    at IncomingMessage.onEnd (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\node_modules\raw-body\index.js:280:7)
+    at IncomingMessage.emit (node:events:513:28)
+    at IncomingMessage.emit (node:domain:489:12) 
+2024-01-09T05:22:24.453Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-09T05:23:18.767Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-09T05:51:51.996Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-09T05:52:16.534Z [error]: Unhandled Rejection{}{"route":"unknown"} 

@@ -81,7 +81,7 @@ export const countriesRevenue = async (req: Request, res: Response) => {
   sendResponse(res, StatusCodes.ACCEPTED, countriesRevenue);
 };
 
-export const getMoviesIncome = async (req: Request, res: Response) => {
+export const fetchIncome = async (req: Request, res: Response) => {
   const { mid } = req.body;
   const midCheck = await Movies.checkMid(parseInt(mid));
   // (3).toFixed;

@@ -36,8 +36,8 @@ export const register = async (req: Request, res: Response): Promise<any> => {
       email,
       "Email Verification Link",
       `Hello👋,${username} 
-      Please verify your email by clicking below link`,
-      `<a>${config.env.app.appUrl}/user/verify-email/${token}</a>`
+      Please verify your email by clicking this link`,
+      `${config.env.app.appUrl}/user/verify-email/${token}`
     );
 
     // console.log("Message sent: %s", info.messageId);
@@ -75,6 +75,10 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     httpOnly: true,
     expires: config.env.app.cookieExpiration,
   });
+  res.cookie("uid", user.id, {
+    httpOnly: true,
+    expires: config.env.app.cookieExpiration,
+  });
   res.cookie("email", user.email, {
     httpOnly: true,
     expires: config.env.app.cookieExpiration,
@@ -88,6 +92,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
 export const logout = async (req: Request, res: Response): Promise<any> => {
   try {
     const token = res.clearCookie("token");
+    const uid = res.clearCookie("uid");
     const email = res.clearCookie("email");
     sendResponse(res, StatusCodes.ACCEPTED, {
       auth: false,
@@ -157,7 +162,7 @@ export const forgotPassword = async (
       email,
       "Password Reset Link",
       `Hello👋, click the link below to reset your password: ${resetLink}`,
-      `<a>${resetLink}</a>`
+      `${resetLink}`
     );
     sendResponse(res, StatusCodes.ACCEPTED, {
       message: "Password reset link sent to your email",
