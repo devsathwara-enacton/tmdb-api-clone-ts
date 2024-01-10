@@ -1,9 +1,9 @@
 import express, { NextFunction, Request, Response, request } from "express";
-import * as Movies from "../models/Movies";
+import * as Movies from "../models/moviesModel";
 import sendResponse from "../../utils/responseUtlis";
 import { StatusCodes } from "http-status-codes";
 export const display = async (req: Request, res: Response): Promise<any> => {
-  const pageNumber: number = parseInt(req.params.pagenumber);
+  const page: any = req.query.page;
   const limit: any = req.query.limit;
   const {
     genre,
@@ -30,13 +30,13 @@ export const display = async (req: Request, res: Response): Promise<any> => {
   genreArray = JSON.parse((genre as string) || "[]");
   let countriesArray: any[];
   countriesArray = JSON.parse((countries as string) || "[]");
-  if (!pageNumber || isNaN(pageNumber)) {
+  if (!page || isNaN(page)) {
     sendResponse(res, StatusCodes.NOT_FOUND, {
       error: "Invalid page number!",
     });
   }
   const moviesData = await Movies.getMovies(
-    pageNumber,
+    page,
     limit,
     genreArray || null,
     countriesArray || null,
@@ -57,15 +57,14 @@ export const display = async (req: Request, res: Response): Promise<any> => {
     keywordArray || null
   );
   if (moviesData) {
-    sendResponse(res, StatusCodes.ACCEPTED, {
-      page: pageNumber,
+    sendResponse(res, StatusCodes.OK, {
+      page: page,
       Movies: moviesData,
     });
   }
 };
 export const countriesRevenue = async (req: Request, res: Response) => {
   const { countries } = req.body;
-  const countryList: any = JSON.stringify(countries);
   let countriesRevenue: any[] = [];
 
   await Promise.all(
@@ -78,7 +77,9 @@ export const countriesRevenue = async (req: Request, res: Response) => {
   );
 
   // console.log(countriesRevenue);
-  sendResponse(res, StatusCodes.ACCEPTED, countriesRevenue);
+  sendResponse(res, StatusCodes.OK, {
+    countriesRevenue: countriesRevenue,
+  });
 };
 
 export const fetchIncome = async (req: Request, res: Response) => {
@@ -93,14 +94,14 @@ export const fetchIncome = async (req: Request, res: Response) => {
   }
   if (mid) {
     const income = await Movies.getIncome(mid);
-    sendResponse(res, StatusCodes.ACCEPTED, income);
+    sendResponse(res, StatusCodes.OK, { income: income });
   } else {
     sendResponse(res, StatusCodes.NOT_FOUND, {
       message: "Movie id required",
     });
   }
 };
-export async function getMovie(req: Request, res: Response) {
+export async function fetch(req: Request, res: Response) {
   let { mid } = req.params;
   const result = await Movies.getMovie(mid);
   if (!result) {

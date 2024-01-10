@@ -1,19 +1,10 @@
-import * as movies from "./Movies";
-import * as ratings from "./Ratings";
-import * as reaction from "./Reaction";
-import * as comment from "./Comments";
-import * as favourite from "./Favourites";
-import * as watchList from "./Watchlist";
-import * as User from "./User";
-import * as chart from "./Chart";
+import * as movies from "./moviesModel";
+import * as ratings from "./ratingsModel";
+import * as reaction from "./reactionModel";
+import * as comment from "./commentModel";
+import * as favorite from "./favoritesModel";
+import * as watchList from "./watchListModel";
+import * as User from "./userModel";
+import * as chart from "./chartModel";
 
-export {
-  movies,
-  ratings,
-  reaction,
-  comment,
-  favourite,
-  watchList,
-  User,
-  chart,
-};
+export { movies, ratings, reaction, comment, favorite, watchList, User, chart };

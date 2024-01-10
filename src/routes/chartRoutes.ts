@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response, Router } from "express";
 import { chart } from "../controllers";
-const router: Router = express.Router();
-router.get("/chart-movies/:id", chart.MoviesChart);
-router.get("/chart-movies", chart.MoviesChart);
+export const router: Router = express.Router();
 
-export default router;
+router.get("/chart-movies", chart.MoviesChart);
+router.get("/genre-chart", chart.MoviesChart);

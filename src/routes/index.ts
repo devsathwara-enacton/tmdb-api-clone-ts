@@ -1,7 +1,7 @@
 import * as authRoutes from "./authroutes";
 import * as chartRoutes from "./chartRoutes";
 import * as commentRoutes from "./commentRoutes";
-import * as favourtieRoutes from "./favouriteRoutes";
+import * as favoriteRoutes from "./favoriteRoutes";
 import * as watchListRoutes from "./watchlistRoutes";
 import * as reactionRoutes from "./reactionRoutes";
 import * as moviesRoutes from "./moviesRoutes";
@@ -10,7 +10,7 @@ export {
   authRoutes,
   chartRoutes,
   commentRoutes,
-  favourtieRoutes,
+  favoriteRoutes,
   watchListRoutes,
   reactionRoutes,
   moviesRoutes,

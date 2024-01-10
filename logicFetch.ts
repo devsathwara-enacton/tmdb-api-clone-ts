@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { insert, insertGenre } from "./src/models/Movies";
+import { insert, insertGenre } from "./src/models/moviesModel";
 import config from "./src/config/config";
 const TMDB_API_KEY = config.env.app.tmdbApiKey;
 const ApiUrl = config.env.app.ApiUrl;

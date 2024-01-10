@@ -68,7 +68,7 @@ export interface MoviesRatings {
 export interface Users {
   created_at: Generated<Date>;
   email: string;
-  favourites: Generated<string | null>;
+  favorites: Generated<string | null>;
   id: Generated<number>;
   is_verified: Generated<number | null>;
   password: string;

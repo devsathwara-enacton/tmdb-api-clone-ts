@@ -9,8 +9,8 @@ export const config = {
       secret: process.env.SECRET || "defaultSecret",
       expiresIn: process.env.EXPIREIN || "1d",
       email: process.env.EMAIL || "example@example.com",
-      cookieExpiration: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      // cookieExpiration: new Date(Date.now() + 60 * 1000), // One minute expiration
+      // cookieExpiration: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      cookieExpiration: new Date(Date.now() + 60 * 1000), // One minute expiration
       database: process.env.DATABASE || "",
       host: process.env.HOST || "localhost",
       user: process.env.USER || "root",
@@ -21,7 +21,7 @@ export const config = {
       appUrl: process.env.APP_URL || "",
       tmdbApiKey: process.env.TMDB_API_KEY || "",
       ApiUrl: process.env.API_URL,
-      mailPort: process.env.MAIL_PORT || 2525,
+      mailPort: Number(process.env.MAIL_PORT),
     },
   },
 };

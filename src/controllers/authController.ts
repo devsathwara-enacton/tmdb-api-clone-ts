@@ -1,15 +1,16 @@
 import { User } from "../models/index";
 import { NextFunction, Request, Response } from "express";
-
 import * as bcrypt from "bcrypt";
 import config from "../config/config";
-import { sendEmail, createJWTToken, validateJWTToken } from "../../utils/utils";
+import { createJWTToken, validateJWTToken, decodeToken } from "../../utils/jwt";
 import { StatusCodes } from "http-status-codes";
 import {
   signInValidation,
   passwordValidation,
 } from "../../validation/validation";
 import sendResponse from "../../utils/responseUtlis";
+import { sendEmail } from "../../utils/sendemail";
+
 export const register = async (
   req: Request,
   res: Response,
@@ -49,7 +50,7 @@ export const register = async (
       );
 
       // console.log("Message sent: %s", info.messageId);
-      sendResponse(res, StatusCodes.ACCEPTED, {
+      sendResponse(res, StatusCodes.OK, {
         message: `Message Sent to ${email} Please verify it`,
       });
     } else {
@@ -69,42 +70,33 @@ export const login = async (req: Request, res: Response): Promise<any> => {
       token: null,
       message: "Email not found please register",
     });
-  }
-  const validPassword = await bcrypt.compare(password, user.password);
-  if (!validPassword) {
-    sendResponse(res, StatusCodes.NON_AUTHORITATIVE_INFORMATION, {
-      auth: false,
-      token: null,
-      message: "Wrong Password",
+  } else {
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      sendResponse(res, StatusCodes.NON_AUTHORITATIVE_INFORMATION, {
+        auth: false,
+        token: null,
+        message: "Wrong Password",
+      });
+    }
+    var token = createJWTToken(
+      { email: user.email, uid: user.id },
+      `${parseInt(config.env.app.expiresIn)}h`
+    );
+    res.cookie("token", token, {
+      httpOnly: true,
+      expires: config.env.app.cookieExpiration,
+    });
+    sendResponse(res, StatusCodes.OK, {
+      auth: true,
+      username: user.username,
+      message: "Authentication Successfull",
     });
   }
-  var token = createJWTToken(
-    { email: user.email },
-    `${parseInt(config.env.app.expiresIn)}h`
-  );
-  res.cookie("token", token, {
-    httpOnly: true,
-    expires: config.env.app.cookieExpiration,
-  });
-  res.cookie("uid", user.id, {
-    httpOnly: true,
-    expires: config.env.app.cookieExpiration,
-  });
-  res.cookie("email", user.email, {
-    httpOnly: true,
-    expires: config.env.app.cookieExpiration,
-  });
-  sendResponse(res, StatusCodes.ACCEPTED, {
-    auth: true,
-    username: user.username,
-    message: "Authentication Successfull",
-  });
 };
 export const logout = async (req: Request, res: Response): Promise<any> => {
   const token = res.clearCookie("token");
-  const uid = res.clearCookie("uid");
-  const email = res.clearCookie("email");
-  sendResponse(res, StatusCodes.ACCEPTED, {
+  sendResponse(res, StatusCodes.OK, {
     auth: false,
     token: null,
     email: null,
@@ -117,13 +109,8 @@ export const verifyEmail = async (
   res: Response
 ): Promise<any> => {
   const { token } = req.params;
-  const decoded: any = validateJWTToken(token);
+  const decoded: any = decodeToken(res, token);
   const user = await User.findUser(decoded.email);
-  if (decoded.exp <= Date.now() / 1000) {
-    sendResponse(res, StatusCodes.BAD_REQUEST, {
-      message: "Token has expired",
-    });
-  }
   if (user.is_verified == 0) {
     await User.updateIsVerified(decoded.email, null);
     const info = await sendEmail(
@@ -134,7 +121,7 @@ export const verifyEmail = async (
           Welcome to TMDB(The Movie Database)`,
       ""
     );
-    sendResponse(res, StatusCodes.ACCEPTED, {
+    sendResponse(res, StatusCodes.OK, {
       message: "Your email is successfully verified you can login now",
     });
   } else {
@@ -151,22 +138,23 @@ export const forgotPassword = async (
   const user = await User.findUser(email);
   if (!user) {
     sendResponse(res, StatusCodes.NOT_FOUND, { message: "User not found" });
+  } else {
+    const resetToken = createJWTToken(
+      { email: email },
+      `${parseInt(config.env.app.expiresIn)}h`
+    );
+    const resetLink = `${config.env.app.appUrl}/user/reset-password/${resetToken}`;
+    const info = await sendEmail(
+      config.env.app.email,
+      email,
+      "Password Reset Link",
+      `Hello👋, click the link below to reset your password`,
+      `${resetLink}`
+    );
+    sendResponse(res, StatusCodes.OK, {
+      message: "Password reset link sent to your email",
+    });
   }
-  const resetToken = createJWTToken(
-    { email: email },
-    `${parseInt(config.env.app.expiresIn)}h`
-  );
-  const resetLink = `${config.env.app.appUrl}/user/reset-password/${resetToken}`;
-  const info = await sendEmail(
-    config.env.app.email,
-    email,
-    "Password Reset Link",
-    `Hello👋, click the link below to reset your password`,
-    `${resetLink}`
-  );
-  sendResponse(res, StatusCodes.ACCEPTED, {
-    message: "Password reset link sent to your email",
-  });
 };
 export const resetPassword = async (
   req: Request,
@@ -181,31 +169,13 @@ export const resetPassword = async (
       sendResponse(res, StatusCodes.NOT_FOUND, {
         message: "Token NOT FOUND",
       });
-    }
-
-    try {
-      const decoded: any = validateJWTToken(token);
-
-      // Check if the token is expired
-      if (decoded.exp <= Date.now() / 1000) {
-        sendResponse(res, StatusCodes.BAD_REQUEST, {
-          message: "Token has expired",
-        });
-      }
-
+    } else {
+      const decoded: any = decodeToken(res, token);
       // Continue with your password reset logic
       const hashedPassword = await bcrypt.hash(password, 10);
       await User.updatePassword(decoded.email, hashedPassword);
-
-      // await User.updateResetToken(decoded.email, null);
-
-      sendResponse(res, StatusCodes.ACCEPTED, {
+      sendResponse(res, StatusCodes.OK, {
         message: "Password reset successful",
-      });
-    } catch (error) {
-      console.error(error);
-      sendResponse(res, StatusCodes.INTERNAL_SERVER_ERROR, {
-        error: "Internal Server Error",
       });
     }
   } catch (error) {
@@ -222,26 +192,28 @@ export const changePassword = async (
     const { currentPassword } = req.body;
     const { password }: any = await passwordValidation.parse(req.body);
     const user = await User.findUser(email);
-
     if (!user) {
       sendResponse(res, StatusCodes.NOT_FOUND, {
         message: "User Not Found",
       });
+    } else {
+      const validPassword = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
+
+      if (!validPassword) {
+        sendResponse(res, StatusCodes.BAD_REQUEST, {
+          message: "Current Password is incorrect",
+        });
+      } else {
+        const hashedNewPassword = await bcrypt.hash(password, 10);
+        await User.updatePassword(email, hashedNewPassword);
+        sendResponse(res, StatusCodes.ACCEPTED, {
+          message: "Password changed successfully",
+        });
+      }
     }
-
-    const validPassword = await bcrypt.compare(currentPassword, user.password);
-
-    if (!validPassword) {
-      sendResponse(res, StatusCodes.BAD_REQUEST, {
-        message: "Current Password is incorrect",
-      });
-    }
-
-    const hashedNewPassword = await bcrypt.hash(password, 10);
-    await User.updatePassword(email, hashedNewPassword);
-    sendResponse(res, StatusCodes.ACCEPTED, {
-      message: "Password changed successfully",
-    });
   } catch (error) {
     next(error);
   }

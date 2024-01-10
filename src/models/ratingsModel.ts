@@ -22,7 +22,6 @@ export async function insert(data: any) {
     const checkRatings = await db
       .selectFrom("movies_ratings")
       .selectAll()
-      .where("mid", "=", data.mid)
       .where("uid", "=", data.uid)
       .executeTakeFirst();
     if (checkRatings) {
