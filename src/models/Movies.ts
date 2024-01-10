@@ -203,7 +203,7 @@ export async function checkMid(movieID: any) {
     .selectFrom("movies-info")
     .selectAll()
     .where("mid", "=", parseInt(`${movieID}`))
-    .execute();
+    .executeTakeFirst();
   return list;
 }
 

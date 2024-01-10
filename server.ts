@@ -5,7 +5,7 @@ import logger from "./utils/logger";
 const server = app.listen(config.env.app.port, () => {
   console.log(`Server is running on port ${config.env.app.port}`);
 });
-process.on("unhandledRejection", (req: Request, reason: any, promise: any) => {
+process.on("unhandledRejection", (req: Request, reason: any) => {
   console.error(req.route + "Unhandled Rejection:", reason);
 
   // Log the unhandled rejection with additional information

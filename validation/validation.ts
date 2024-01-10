@@ -16,8 +16,13 @@ export const signInValidation: any = z.object({
     },
     {
       message:
-        "Invalid password. It should be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one digit, and one special character.",
+        "Password must be at least 8 characters and include lowercase, uppercase, digit, and special character.",
     }
   ),
 });
-export default signInValidation;
+export const validateString = z.object({
+  name: z.string().trim().min(1, { message: "Watch list Name Required" }),
+});
+export const validateComment = z.object({
+  comments: z.string().trim().min(1, { message: "Comment Required" }),
+});

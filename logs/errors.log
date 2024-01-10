@@ -213,3 +213,22 @@
 2024-01-09T07:00:35.814Z [error]: Unhandled Rejection{}{"route":"unknown"} 
 2024-01-09T07:40:28.741Z [error]: Unhandled Rejection{}{"route":"unknown"} 
 2024-01-09T07:45:04.455Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-10T04:01:30.803Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-10T04:04:57.652Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-10T04:15:10.361Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-10T04:33:43.358Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-10T04:36:41.503Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-10T04:41:21.414Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-10T04:50:52.797Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-10T04:51:37.155Z [error]: Unhandled Rejection{}{"route":"unknown"} 
+2024-01-10T04:54:17.731Z [error]: "/insertReply/:mid/:cid"  Unhandled Error: TypeError: comment.insert is not a function
+    at C:\Practice dev Sathwara\tmdb-api-clone\src\controllers\commentController.ts:44:34
+    at Generator.next (<anonymous>)
+    at C:\Practice dev Sathwara\tmdb-api-clone\src\controllers\commentController.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (C:\Practice dev Sathwara\tmdb-api-clone\src\controllers\commentController.ts:4:12)
+    at insertReply (C:\Practice dev Sathwara\tmdb-api-clone\src\controllers\commentController.ts:46:12)
+    at Layer.handle [as handle_request] (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Practice dev Sathwara\tmdb-api-clone\node_modules\express\lib\router\route.js:144:13)
+    at C:\Practice dev Sathwara\tmdb-api-clone\src\middleware\authMiddleware.ts:48:7
+    at Generator.next (<anonymous>) 

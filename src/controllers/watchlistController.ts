@@ -2,34 +2,43 @@ import express, { NextFunction, Request, Response, request } from "express";
 import { watchList, movies } from "../models/index";
 import sendResponse from "../../utils/responseUtlis";
 import { StatusCodes } from "http-status-codes";
-export const create = async (req: Request, res: Response): Promise<any> => {
-  let { name } = req.body;
-  if (!name) {
-    sendResponse(res, StatusCodes.BAD_REQUEST, {
-      message: "List name required",
-    });
-  }
-  const uid = parseInt(req.cookies.uid);
-  const nameList = await watchList.access(uid);
-  for (let i of nameList) {
-    if (i.name === name) {
-      sendResponse(res, StatusCodes.CONFLICT, {
-        message: `This list already exists!`,
-      });
+import { validateString } from "../../validation/validation";
+export const create = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    let { name }: any = await validateString.parse(req.body);
+    // if (!name) {
+    //   sendResponse(res, StatusCodes.BAD_REQUEST, {
+    //     message: "List name required",
+    //   });
+    // }
+    const uid = parseInt(req.cookies.uid);
+    const nameList = await watchList.access(uid);
+    for (let i of nameList) {
+      if (i.name === name) {
+        sendResponse(res, StatusCodes.CONFLICT, {
+          message: `This list already exists!`,
+        });
+      }
     }
-  }
 
-  let data: any = {
-    name: name,
-    uid: uid,
-  };
-  const result = await watchList.insert(data);
-  // if (!result) {
-  //   return res.status(400).send({ message: "errror while creating list" });
-  // }
-  sendResponse(res, StatusCodes.ACCEPTED, {
-    Message: "Successfully created list.",
-  });
+    let data: any = {
+      name: name,
+      uid: uid,
+    };
+    const result = await watchList.insert(data);
+    // if (!result) {
+    //   return res.status(400).send({ message: "errror while creating list" });
+    // }
+    sendResponse(res, StatusCodes.ACCEPTED, {
+      Message: "Successfully created list.",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 export const access = async (req: Request, res: Response) => {
   const uid: number = req.cookies.uid;
@@ -54,7 +63,8 @@ export const insert = async (req: Request, res: Response) => {
     sendResponse(res, StatusCodes.ACCEPTED, {
       message: `${mid} added to your WatchList`,
     });
-  } else {
+  }
+  if (!result.numAffectedRows) {
     sendResponse(res, StatusCodes.CONFLICT, {
       message: `${mid} already in your WatchList`,
     });
@@ -64,6 +74,11 @@ export const getMovies = async (req: Request, res: Response) => {
   const { uid } = req.cookies;
   const { id } = req.params;
   const favouritesId: any = await watchList.getMid(uid, id);
+  if (!favouritesId) {
+    return sendResponse(res, StatusCodes.NOT_FOUND, {
+      message: `The list with the given ID does not exist for your account!`,
+    });
+  }
   if (favouritesId.mid === null) {
     sendResponse(res, StatusCodes.NOT_FOUND, {
       message: "List Doesnt have any Movies Please Add Movies",
