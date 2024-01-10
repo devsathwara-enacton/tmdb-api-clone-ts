@@ -5,7 +5,10 @@ import * as bcrypt from "bcrypt";
 import config from "../config/config";
 import { sendEmail, createJWTToken, validateJWTToken } from "../../utils/utils";
 import { StatusCodes } from "http-status-codes";
-import { signInValidation } from "../../validation/validation";
+import {
+  signInValidation,
+  passwordValidation,
+} from "../../validation/validation";
 import sendResponse from "../../utils/responseUtlis";
 export const register = async (
   req: Request,
@@ -149,7 +152,6 @@ export const forgotPassword = async (
   if (!user) {
     sendResponse(res, StatusCodes.NOT_FOUND, { message: "User not found" });
   }
-  console.log(config.env.app.expiresIn);
   const resetToken = createJWTToken(
     { email: email },
     `${parseInt(config.env.app.expiresIn)}h`
@@ -173,7 +175,7 @@ export const resetPassword = async (
 ): Promise<any> => {
   try {
     const { token } = req.params;
-    const { password } = await signInValidation.parse(req.body);
+    const { password } = await passwordValidation.parse(req.body);
 
     if (!token) {
       sendResponse(res, StatusCodes.NOT_FOUND, {
@@ -217,9 +219,8 @@ export const changePassword = async (
 ): Promise<any> => {
   try {
     let email = req.cookies.email;
-    const { currentPassword, newPassword } = await signInValidation.parse(
-      req.body
-    );
+    const { currentPassword } = req.body;
+    const { password }: any = await passwordValidation.parse(req.body);
     const user = await User.findUser(email);
 
     if (!user) {
@@ -236,7 +237,7 @@ export const changePassword = async (
       });
     }
 
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    const hashedNewPassword = await bcrypt.hash(password, 10);
     await User.updatePassword(email, hashedNewPassword);
     sendResponse(res, StatusCodes.ACCEPTED, {
       message: "Password changed successfully",

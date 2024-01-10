@@ -17,25 +17,24 @@ export const create = async (
     // }
     const uid = parseInt(req.cookies.uid);
     const nameList = await watchList.access(uid);
-    for (let i of nameList) {
-      if (i.name === name) {
-        sendResponse(res, StatusCodes.CONFLICT, {
-          message: `This list already exists!`,
-        });
-      }
-    }
 
-    let data: any = {
-      name: name,
-      uid: uid,
-    };
-    const result = await watchList.insert(data);
-    // if (!result) {
-    //   return res.status(400).send({ message: "errror while creating list" });
-    // }
-    sendResponse(res, StatusCodes.ACCEPTED, {
-      Message: "Successfully created list.",
-    });
+    if (nameList.name === name) {
+      sendResponse(res, StatusCodes.CONFLICT, {
+        message: `This list already exists!`,
+      });
+    } else {
+      let data: any = {
+        name: name,
+        uid: uid,
+      };
+      const result = await watchList.insert(data);
+      // if (!result) {
+      //   return res.status(400).send({ message: "errror while creating list" });
+      // }
+      sendResponse(res, StatusCodes.ACCEPTED, {
+        Message: "Successfully created list.",
+      });
+    }
   } catch (error) {
     next(error);
   }

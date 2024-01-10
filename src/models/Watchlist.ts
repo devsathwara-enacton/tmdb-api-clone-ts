@@ -70,7 +70,7 @@ export const access = async (uid: any): Promise<any> => {
     .selectFrom("watch-list")
     .selectAll()
     .where("uid", "=", parseInt(`${uid}`))
-    .execute();
+    .executeTakeFirst();
   return list;
 };
 
