@@ -9,7 +9,7 @@ import {
   passwordValidation,
 } from "../../validation/validation";
 import sendResponse from "../../utils/responseUtlis";
-import { sendEmail } from "../../utils/sendemail";
+import { sendEmail } from "../../utils/sendEmail";
 
 export const register = async (
   req: Request,
