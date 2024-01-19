@@ -2,13 +2,11 @@
   "name": "tmdb-api-clone",
   "version": "1.0.0",
   "description": "",
-  "main": "server.ts",
-  "type": "module",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc-node": "tsc-node src/index.ts",
-    "start": "tsc && node /opt/render/project/src/server.ts",
-    "prestart": "tsc",
+    "start": "tsc && node dist/index.js",
     "dev": "nodemon src/index.ts"
   },
   "keywords": [],
@@ -28,7 +26,6 @@
     "kysely": "^0.26.3",
     "mysql2": "^3.6.5",
     "nodemailer": "^6.9.7",
-    "nodemon": "^3.0.3",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
   },
