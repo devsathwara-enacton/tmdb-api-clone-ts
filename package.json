@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tsc-node": "tsc-node src/index.ts",
-    "start": "tsc && node dist/index.js",
+    "tsc-node": "tsc-node server.ts",
+    "start": "node ./dist/server.js",
     "dev": "nodemon server.ts"
   },
   "keywords": [],
