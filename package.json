@@ -2,12 +2,12 @@
   "name": "tmdb-api-clone",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.ts",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc-node": "tsc-node src/index.ts",
-    "start": "tsc && node /opt/render/project/src/server.js",
+    "start": "tsc && node /opt/render/project/src/server.ts",
     "prestart": "tsc",
     "dev": "nodemon src/index.ts"
   },
