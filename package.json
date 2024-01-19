@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc-node": "tsc-node src/index.ts",
-    "start": "node dist/index.js",
+    "start": "ts-node /opt/render/project/src/server.ts",
     "dev": "nodemon src/index.ts"
   },
   "keywords": [],
